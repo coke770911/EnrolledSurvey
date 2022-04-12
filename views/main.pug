@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  div(class='container',id='app')
+  
+  script.
+    let aaa = function(e) {
+      axios.get('/process')
+      .then(function (response) {
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.statusText);
+        console.log(response.headers);
+        console.log(response.config);
+      });
+    }
+
+

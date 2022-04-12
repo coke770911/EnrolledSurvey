@@ -1,0 +1,183 @@
+extends layout
+
+block content
+  div(id="myModal",class="modal",tabindex="-1",aria-hidden="true")
+    form(id="dataForm")
+      input(name="es_no",type="hidden",id="es_no")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h5(class="modal-title",id="header-title") 
+            button(type="button" ,class="btn-close" ,data-bs-dismiss="modal" ,aria-label="Close")
+          div(class="modal-body")
+            div(class="mb-3")
+              label(for="es_stdname" ,class="form-label") 姓名
+              input(type="text" ,class="form-control" ,id="es_stdname" ,disabled)
+            div(class="mb-3")
+              label(for="es_school" ,class="form-label") 目前學校
+              input(type="text" ,class="form-control" ,id="es_school" ,disabled)
+            div(class="mb-3")
+              label(for="es_dept" ,class="form-label") 目前科別
+              input(type="text" ,class="form-control" ,id="es_dept" ,disabled)
+            div(class="mb-3")
+              label(for="dept_name" ,class="form-label") 屬意科系
+              input(type="text" ,class="form-control" ,id="dept_name" ,disabled)
+            div(class="mb-3")
+              label(for="es_phone" ,class="form-label") 連絡電話
+              input(type="text" ,class="form-control" ,id="es_phone" ,disabled)
+            div(class="mb-3")
+              label(for="es_lineid" ,class="form-label") LINE ID
+              input(type="text" ,class="form-control" ,id="es_lineid" ,disabled)
+            div(class="mb-3")
+              label(for="es_email" ,class="form-label") 信箱
+              input(type="text" ,class="form-control" ,id="es_email" ,disabled)
+            div(class="mb-3")
+              label(for="es_reason" ,class="form-label") 選擇本校原因
+              textarea(class="form-control" ,id="es_reason" ,rows="3" ,disabled)
+            div(class="mb-3")
+              label(for="es_memo" ,class="form-label") 其他詢問的問題
+              textarea(class="form-control" ,id="es_memo" ,rows="3" ,disabled)
+            div(class="mb-3")
+              label(for="es_remark" ,class="form-label") 處理備註
+              textarea(name="es_remark",class="form-control" ,id="es_remark" ,rows="3")
+              label(class="form-label",id="es_modify_datetime") 
+            div(class="mb-3")
+              label(for="retagdept" ,class="form-label") 轉介其他系所處理
+              select(name="retagdept",for="retagdept" ,class="form-select")
+                option(value="") 不轉介 
+                each dept in deptlist
+                  option(value=dept.val ) #{dept.name}
+            div(class="mb-3")
+              div(class="form-check")
+                input(class="form-check-input" ,name="es_is_none" ,type="checkbox" ,value="0" ,id="flexCheckDefault")
+                label(class="form-check-label" ,for="flexCheckDefault") 列為無效資料
+          div(class="modal-footer")
+            button(type="button" ,class="btn btn-secondary" ,data-bs-dismiss="modal") 取消
+            if admin
+              button(type="button" ,class="btn btn-danger" ,onclick="stdprocess('delete')") 刪除此筆資料
+            button(type="button" ,class="btn btn-primary" ,onclick="stdprocess('put')") 更新資料
+  div(class='container mt-3',id='app')
+    h2 學生清單
+    hr
+    form(class="row gx-3 gy-2 align-items-center",id="serachForm",name="serachForm",method="post",action='#')
+      label(class="col-auto col-form-label",for="sdate" ) 搜尋起始日期
+      div(class="col-auto")
+        input(class="form-control",type="date" id="sdate",name="sdate")
+      label(class="col-auto col-form-label",for="edate" ) 結束日期
+      div(class="col-auto")
+        input(class="form-control",type="date" id="edate",name="edate")
+      div(class="col-auto")
+        button(class="btn btn-outline-info",type="submit") 搜尋
+      div(class="col-auto")
+        button(class="btn btn-outline-success",id="download-xlsx",type="button") 下載成Excel檔案 
+  div(class="container mt-3")
+    table(id="std-table")    
+  script.
+    let myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+      backdrop: 'static' ,
+      keyboard: false
+    })
+ 
+    let table = new Tabulator("#std-table", {
+      layout:"fitColumns",
+      minHeight:"200px",
+      placeholder:"尚未搜尋到資料",
+      responsiveLayout:"collapse",
+      pagination:true,
+      paginationSize:20,
+      paginationCounter : "rows",
+      columns:[
+        {title:"流水號", field:"es_num",hozAlign:"center"},
+        {title:"編號", field:"es_no", visible:false},
+        {title:"登記時間", field:"es_create_datetime",hozAlign:"center"},
+        {title:"姓名", field:"es_stdname",hozAlign:"center"},
+        {title:"目前學校", field:"es_school"},
+        {title:"目前科別", field:"es_dept"},
+        {title:"屬意科系", field:"dept_name"},
+        {title:"連絡電話", field:"es_phone"},
+        {title:"LINE ID", field:"es_lineid"},
+        {title:"信箱", field:"es_email"},
+        {title:"選擇原因", field:"es_reason"},
+        {title:"其他選擇原因", field:"es_ext_reason"},
+        {title:"學生其他問題", field:"es_memo"},
+        {title:"系上處理備註", field:"es_remark"},
+        {title:"更新時間", field:"es_modify_datetime",hozAlign:"center"},
+        {title:"已發信", field:"es_is_mail",formatter:"tickCross",hozAlign:"center"},
+        {title:"已處理", field:"es_is_edit",formatter:"tickCross",hozAlign:"center"},
+        {title:"有效資料", field:"es_is_none",formatter:"tickCross",hozAlign:"center"},
+        {title:"轉介", field:"es_transfer",hozAlign:"center"},
+      ],
+    });
+
+    document.getElementById("download-xlsx").addEventListener("click", function(){
+      table.download("xlsx", "就讀意願清單.xlsx", {sheetName:"sheet"});
+    });
+   
+    table.on("rowClick", function(e, row){
+      document.getElementById("dataForm").reset();
+      document.getElementById('header-title').innerText = "編輯"
+      document.getElementById('es_modify_datetime').innerText = "最後更新時間：" + row._row.data.es_modify_datetime
+      document.getElementById('es_no').value = row._row.data.es_no
+      document.getElementById('es_stdname').value = row._row.data.es_stdname
+      document.getElementById('es_school').value = row._row.data.es_school
+      document.getElementById('es_dept').value = row._row.data.es_dept
+      document.getElementById('dept_name').value = row._row.data.dept_name
+      document.getElementById('es_phone').value = row._row.data.es_phone
+      document.getElementById('es_email').value = row._row.data.es_email
+      document.getElementById('es_lineid').value = row._row.data.es_lineid
+      document.getElementById('es_reason').value = row._row.data.es_reason + "\n" + row._row.data.es_ext_reason
+      document.getElementById('es_remark').value = row._row.data.es_remark
+      document.getElementById('es_memo').value = row._row.data.es_memo
+      loadstddata();
+      myModal.toggle()
+    });
+
+    document.getElementById('serachForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      loadstddata();
+    })
+
+    var loadstddata = function() {
+      axios({
+        method: "post",
+        url: "/stdlist",
+        data: new FormData(document.getElementById('serachForm'))
+      })
+      .then(function (response) {     
+        if(response.data.result == 1) {
+          if(response.data.data.length > 0) {
+            table.replaceData(response.data.data)
+          } else {
+            table.replaceData([])
+            swal({title: '無搜尋到資料。',icon: "warning",button: "確定"})
+          }
+        } else {
+          table.replaceData([])
+          swal({title: '伺服器發生錯誤。',icon: "warning",button: "確定"})
+        }
+      })
+      .catch(function (error) {
+        swal({title: '遠端伺服器發生錯誤。',icon: "warning",button: "確定"})
+      });
+    }
+    loadstddata();
+
+    let stdprocess = function($method) {
+      axios({
+        method: $method,
+        url: "/stdlist",
+        data: new FormData(document.getElementById('dataForm'))
+      })
+      .then(function (response) {     
+        swal({title: response.data.errMsg,icon: "warning" ,button: "確定"}).then(() => {
+          loadstddata();
+          myModal.hide()
+        })
+      })
+      .catch(function (error) {
+        swal({title: '遠端伺服器發生錯誤。',icon: "warning" ,button: "確定"})
+        myModal.hide()
+      });
+    }
+

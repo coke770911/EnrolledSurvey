@@ -1,0 +1,134 @@
+extends layout
+
+block content
+  div(class='container mt-3',id='app')
+    h2 權限設定
+    hr
+    form(class="row gx-3 gy-2 align-items-center",id="authForm",name="authForm")
+      label(class="col-auto col-form-label",for="deptset" ) 權限單位設定
+      div(class="col-auto")
+        select(class="form-select",name="deptset",id="deptset")
+          option(value="AL") 全系管理者
+          if is_deptlist
+            each dept in deptlist
+              option(value=dept.as_OitCode ) #{dept.as_UnitCName}
+      label(class="col-auto col-form-label",for="authacc" ) 輸入職員編號
+      div(class="col-auto")
+        input(class="form-control",type="text" id="authacc",name="authacc",maxlength="20")
+      label(class="col-auto col-form-label",for="usercname" ) 職員姓名
+      div(class="col-auto")
+        input(class="form-control",type="text" id="usercname",name="usercname",disabled)
+      div(class="col-auto")
+        button(class="btn btn-outline-info",type="submit") 新增 
+  div(class="container mt-3")
+    table(id="staff-list")
+  script.
+    let LoadSetData = function() {
+      axios({
+        method: 'get',
+        url: "/userauth",
+      })
+      .then(function (response) {     
+        if(response.data.result == 1) {
+          if(response.data.data.length > 0) {
+            table.setData(response.data.data)
+          } else {
+            swal({title: '無搜尋到資料。',icon: "warning",button: "確定"})
+          }
+        } else {
+          swal({title: '無搜尋到資料。',icon: "warning",button: "確定"})
+        }
+      })
+      .catch(function (error) {
+        swal({title: '遠端伺服器發生錯誤。',icon: "warning",button: "確定"})
+      });
+    }
+    LoadSetData();
+
+    document.getElementById('authForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      axios({
+        method: "post",
+        url: "/userauth",
+        data: new FormData(document.getElementById('authForm'))
+      })
+      .then((response) => {     
+        console.dir(response.data.data[0])
+        if(response.data.data[0].rowCount > 0) {
+          document.getElementById('authForm').reset();
+          swal({title: '新增成功。',icon: "success",button: "確定"})
+          LoadSetData();
+        } else {
+          swal({title: '新增失敗。',icon: "warning",button: "確定"})
+        }
+      })
+      .catch((error) => {
+        swal({title: '遠端伺服器發生錯誤。',icon: "warning",button: "確定"})
+      });
+    })
+
+    document.getElementById('authacc').addEventListener('change', (e) => { 
+      axios.get("/userauth/user",{params:{authacc:e.target.value}})
+      .then((response) => {
+        document.getElementById('usercname').value = '';
+        if(response.data.data.length > 0) {
+          document.getElementById('usercname').value = response.data.data[0].sb_CName
+        } else {
+          swal({title: '搜尋不到此帳號資料。',icon: "warning",button: "確定"})
+        }
+      })
+      .catch((error) => {
+        swal({title: '遠端伺服器發生錯誤。',icon: "warning",button: "確定"})
+      });
+    })
+
+    let table = new Tabulator("#staff-list", {
+      layout:"fitColumns",
+      minHeight:300,
+      maxHeight:"100%",
+      height:"100%",
+      columns:[
+        {title:"單位", field:"as_UnitCName"},
+        {title:"姓名", field:"as_CName"},
+        {title:"帳號", field:"as_Sys_Account"},
+        {title:"權限", field:"as_OitCode"},
+        {title:"可否修改", field:"is_edit",formatter:"tickCross"},
+      ],
+    });
+
+    table.on("rowClick", function(e, row){
+      if(!row._row.data.is_edit) {
+        swal({title: "此使用者系統內建不可刪除!",icon: "warning",button: "確認"});
+      } else {
+        swal({
+        title: "是否刪除"+ row._row.data.as_CName +"使用者權限 ?",
+        text: "按下確認按鈕會立即刪除",
+        icon: "warning",
+        buttons: ["取消", "確認刪除"],
+        dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            authDel(row._row.data.as_Sys_Account);
+            swal({title: "已刪除！",icon: "success",button: "刪除成功"});
+          }
+        });
+      } 
+    });
+  
+    let authDel = ($account) => {
+      axios.delete("/userauth", {params:{authacc:$account}})
+      .then((response) => {     
+        if(response.data.data[0].rowCount > 0) {
+          document.getElementById('authForm').reset();
+          swal({title: "刪除成功。",icon: "success",button: "確定"})
+          LoadSetData();
+        } else {
+          swal({title: '刪除失敗。',icon: "warning",button: "確定"})
+        }
+      })
+      .catch((error) => {
+        swal({title: '遠端伺服器發生錯誤。',icon: "warning",button: "確定"})
+      });
+    }
