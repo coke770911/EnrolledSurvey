@@ -8,7 +8,6 @@ block content
       label(class="col-auto col-form-label",for="deptset" ) 權限單位設定
       div(class="col-auto")
         select(class="form-select",name="deptset",id="deptset")
-          option(value="AL") 全系管理者
           if is_deptlist
             each dept in deptlist
               option(value=dept.as_OitCode ) #{dept.as_UnitCName}

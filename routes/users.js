@@ -39,25 +39,32 @@ router.get('/logout',(req, res, next) => {
 });
 
 router.post('/', upload.any(),function (req, res, next) {
-  let paramter = {
-    replacements: {
-      account: req.body.account,
-      password: req.body.password
-    }
+  let account = req.body.account.split('/');
+
+  if(account.length >= 2 && !(['fa249','fz083','ot088'].includes(account[1]))) {
+    res.set({
+      'Content-Type': 'application/json',
+    }).send(JSON.stringify({
+      errMsg: '登入失敗，沒有系統權限。',
+      result: 0
+    }))
+    return ;
   }
+
   soap.createClient(process.env.SOAP_ADURL, function (err, client) {
     client.GetAeustAuthenticationConnect({
-      Account: req.body.account,
+      Account: account.length >= 2 ? account[1] : account[0] ,
       Password: req.body.password
     }, function (err, result) {
       if (result.GetAeustAuthenticationConnectResult === 'True 登入成功') {
-        sequelize.query("SELECT * FROM [ARCHIVES].[dbo].[v_ref_assetAndMasrt] WHERE as_Sys_Account LIKE :account", paramter)
+        let paramter = { replacements: {account: account[0]} }
+        sequelize.query("SELECT * FROM [ARCHIVES].[dbo].[v_ref_assetAndMasrt] WHERE as_Sys_Account LIKE :account ORDER BY odr DESC;", paramter)
           .then(function (DataList) {                 
             if(DataList[0].length > 0) {
               req.session.account =  DataList[0][0].as_Sys_Account
               req.session.username =  DataList[0][0].as_CName
               req.session.dept = DataList[0][0].as_OitCode
-              req.session.admin =  DataList[0][0].as_OitCode === 'AL' ? true : false;      
+              req.session.admin = DataList[0][0].as_OitCode === 'AL' ? true : false;      
               req.session.login = true
               res.set({
                 'Content-Type': 'application/json',
@@ -70,7 +77,7 @@ router.post('/', upload.any(),function (req, res, next) {
                 'Content-Type': 'application/json',
               }).send(JSON.stringify({
                 errMsg: '登入失敗，沒有系統權限。',
-                result: 1
+                result: 0
               }))
             }
           })

@@ -19,35 +19,39 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
 const csv = require('csvtojson');
 const Null = require('tedious/lib/data-types/null');
 
-/* GET home page. */
+/**
+ * 維修葉面 換path
+ */
+router.get('/t', function (req, res, next) {
+  res.render('pause',{title: '亞東科技大學 就讀意願調查'});
+});
+
+router.get('/en', function (req, res, next) {
+  res.render('indexall', {
+    title: '亞東科技大學 就讀意願調查',
+  });
+});
+
+/**
+ * 主要資料填寫畫面
+ */
 router.get('/', function (req, res, next) {
-  let enterdeptlist = [{
-    val: '2NS',
-    name: '日間部二技護理系'
+  let enterdeptlist = [
+  {
+    val: '1MT',
+    name: '日間部四技材料與纖維系'
   },
   {
     val: '1DN',
     name: '日間部四技工商業設計系'
   },
   {
-    val: '1IM',
-    name: '日間部四技工業管理系'
-  },
-  {
-    val: '1MD',
-    name: '日間部四技行銷與流通管理系'
-  },
-  {
-    val: '1MT',
-    name: '日間部四技材料與纖維系'
+    val: '1ME',
+    name: '日間部四技機械工程系'
   },
   {
     val: '1CE',
     name: '日間部四技通訊工程系'
-  },
-  {
-    val: '1MI',
-    name: '日間部四技資訊管理系'
   },
   {
     val: '1ET',
@@ -58,23 +62,36 @@ router.get('/', function (req, res, next) {
     name: '日間部四技電機工程系'
   },
   {
-    val: '1ME',
-    name: '日間部四技機械工程系'
+    val: '1IM',
+    name: '日間部四技工業管理系'
   },
   {
     val: '1HA',
     name: '日間部四技醫務管理系'
   },
   {
+    val: '1MI',
+    name: '日間部四技資訊管理系'
+  },
+  {
+    val: '1MD',
+    name: '日間部四技行銷與流通管理系'
+  },
+  {
     val: '1NS',
     name: '日間部四技護理系'
+  },
+  {
+    val: '2NS',
+    name: '日間部二技護理系'
   },
   {
     val: 'RNS',
     name: '進修部二技護理系'
   }
   ]
-  const converter = csv()
+
+  const converter = csv() 
     .fromFile('./public/cache/high.csv')
     .then((json) => {
       res.render('index', {
@@ -85,13 +102,52 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/**
+ *  先確認重複填的部分
+ */
+router.post('/getCheckUser', upload.any(),function (req, res, next) {
+  let birthdayStr = '';
+  birthdayStr += (req.body.birthYear-1911).toString().length > 2 ? (req.body.birthYear-1911).toString() : '0' + (req.body.birthYear-1911).toString();
+  birthdayStr += req.body.birthMonth.toString().length > 1 ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString();
+  birthdayStr += req.body.birthday.toString().length > 1 ? req.body.birthday.toString() : '0' + req.body.birthday.toString();
+  
+  let paramter = {
+    replacements: {
+      es_stdname: req.body.stdname,
+      es_birthday: birthdayStr,
+    }
+  }
+
+  sequelize.query("SELECT COUNT([es_stdname]) AS row_count FROM [ARCHIVES].[dbo].[tb_EnrolledSurvey] WHERE es_stdname LIKE :es_stdname AND es_birthday = :es_birthday AND [es_is_del] = 0", paramter)
+    .then(function (DataList) {
+      console.dir(DataList)
+      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList,result: 1}))
+    })
+    .catch(err => {
+      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: 'API error。',result: 0}))
+    });
+  
+});
+/**
+ * 送出資料
+ */
 router.post('/', upload.any(),function (req, res, next) {
+  let birthdayStr = '';
+  birthdayStr += (req.body.birthYear-1911).toString().length > 2 ? (req.body.birthYear-1911).toString() : '0' + (req.body.birthYear-1911).toString();
+  birthdayStr += req.body.birthMonth.toString().length > 1 ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString();
+  birthdayStr += req.body.birthday.toString().length > 1 ? req.body.birthday.toString() : '0' + req.body.birthday.toString();
+  
+  if(birthdayStr.length != 7) {
+	res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未填寫,Birthday input error',result: 0}));
+  }
+  
   let paramter = {
     replacements: {
       es_school: req.body.school,
       es_dept: req.body.dept,
       es_stdname: req.body.stdname,
       es_phone: req.body.phone,
+      es_birthday: birthdayStr,
       es_email: req.body.email,
       es_lineid: req.body.lineid,
       es_enterdept: req.body.entertype,
@@ -100,12 +156,14 @@ router.post('/', upload.any(),function (req, res, next) {
       es_memo: req.body.es_memo,
     }
   }
-  sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdname ,:es_phone ,:es_email ,:es_lineid ,:es_enterdept ,:es_reason ,:es_ext_reason ,:es_memo;", paramter)
+  console.dir(paramter)
+  sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept ,:es_reason ,:es_ext_reason ,:es_memo;", paramter)
     .then(function (DataList) {
       console.dir(DataList)
       res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList,result: 1}))
     })
     .catch(err => {
+      console.dir(err)
       res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: 'API發生錯誤。',result: 0}))
     });
 });

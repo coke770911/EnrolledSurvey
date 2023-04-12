@@ -19,43 +19,6 @@ html
     noscript
       iframe(src="https://www.googletagmanager.com/ns.html?id=GTM-NK94GPN",height="0",width="0",style="display:none;visibility:hidden")
     if login != true
-      form(id="logForm",name="logForm",method="post",action='/users')
-        div(class="modal fade " ,id="loginmodal" ,tabindex="-1" ,aria-labelledby="loginmodalLabel" ,aria-hidden="true")
-          div(class="modal-dialog modal-dialog-centered")
-            div(class="modal-content")
-              div(class="modal-header")
-                h5(class="modal-title" ,id="loginmodalLabel") 登入視窗
-                button(type="button" ,class="btn-close" ,data-bs-dismiss="modal" ,aria-label="Close")
-              div(class="modal-body")
-                div(class="row mb-3")
-                  label(for="account" ,class="col-sm-2 col-form-label") 帳號
-                  div(class="col-sm-10")
-                    input(type="text" ,class="form-control" ,id="account" ,name="account")
-                div(class="row mb-3")
-                  label(for="password" ,class="col-sm-2 col-form-label") 密碼
-                  div(class="col-sm-10")
-                    input(type="password" ,class="form-control" ,id="password",name="password",autocomplete="off")
-              div(class="modal-footer")
-                button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") 取消
-                button(type="submit" class="btn btn-primary") 登入
-    nav.d-none.d-sm-block.d-none.d-sm-block(class="py-2 bg-light border-bottom")
-      div(class="container d-flex flex-wrap")
-        ul(class="nav me-auto")
-          li(class="nav-item")
-            a(href="/" ,class="nav-link link-dark px-2" ,aria-current="page") 首頁
-          if login
-            li(class="nav-item")
-              a(href="/stdlist/view" ,class="nav-link link-dark px-2" ,aria-current="page") 學生清單
-            li(class="nav-item")
-              a(href="/userauth/view" ,class="nav-link link-dark px-2" ,aria-current="page") 權限設定
-        ul(class="nav")
-          if login
-            li(class="nav-item")
-              a(href="/users/logout" ,class="nav-link link-dark px-2",id="") 登出
-          else
-            li(class="nav-item")
-              a(href="#" ,class="nav-link link-dark px-2",data-bs-toggle="modal",data-bs-target="#loginmodal") 管理
-    if login != true
       header.d-none.d-sm-block.d-none.d-sm-block(class="py-2")
         div(class="container d-flex flex-wrap justify-content-center")
           a(href="/",class="d-flex align-items-center mb-lg-0 me-lg-auto text-dark text-decoration-none")
@@ -79,9 +42,8 @@ html
           footer(class="row")
             div(class="col-12")
               ul
-                li (220303) 新北市板橋區四川路二段58號，TEL: (02) 7738-8000  或 (02) 7738-0145 分機1228 
-                li 招生專線：(02)7738-7708（本專線將無法轉接），0900-577380(僅非上班時間)
-				
+                li Phro：(+886) 2-7738-8000 OR (+886) 2-7738-0145 
+                li Address：No.58, Sec.2, Sihchuan Rd.,Banciao District, New Taipei City 220303, Taiwan (R.O.C)
     script.
       if(document.getElementById('logForm') !== null) {
         document.getElementById('logForm').addEventListener('submit', function (event) {

@@ -4,8 +4,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session')
-
+const session = require('express-session')
+const SQLiteStore = require('connect-sqlite3')(session);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -32,17 +32,18 @@ app.use('/bootstrap/js',express.static(path.join(__dirname, 'node_modules/bootst
 app.use('/axios',express.static(path.join(__dirname, 'node_modules/axios/dist')));
 
 app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
+  store: new SQLiteStore,
+  secret: 'your secret',
+  resave: true,
   saveUninitialized: true,
-}))
+  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
+}));
 
 //router add
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/stdlist', stdlist);
 app.use('/userauth', userauth);
-
 
 //sys process
 app.use(function(req, res, next) {

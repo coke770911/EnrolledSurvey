@@ -1,73 +1,67 @@
-extends layout
+extends layoutall
 
 block content
   div.container(style="padding-left: 0px;padding-right: 0px;")
     div(class="me-md-3 pt-3 px-3 pt-md-5 text-white overflow-hidden",style='background-image: url("/images/bg-01.png");')
       div(class="my-2 py-2",style="margin-bottom: 3.5rem!important;")
-        h2(class="fw-bold text-center",style="color: black;font-size: 36px;") 亞東科技大學
-        p(class="fw-bold text-center",style="color: black;font-size: 24px;") 就讀意願調查
+        h2(class="fw-bold text-center",style="color: black;font-size: 36px;") Asia Eastern University of Science and Technology
+        p(class="fw-bold text-center",style="color: black;font-size: 24px;") applying to AEUST
         div(class="shadow-sm mx-auto",style="border-radius: 15px 15px 15px 15px;padding: 1rem 1rem 1rem 1rem;background-color: #4FC3F7;")
           form(class="needs-validation",id="formdata",name="formdata",method="post",action='/',novalidate)
             div(class='row mb-3')
-              label(for="school",class="col-sm-2 col-form-label col-form-label-lg") 學校*
+              label(for="school",class="col-sm-2 col-form-label col-form-label-lg") 學校 School*
               div(class="col-sm-10")
-                input(type="text",class="form-control form-control-lg",list="datalistOptions",id="school",name="school",placeholder="請輸入後點選就讀的高中職(必填)",maxlength='20',required)
-                datalist(id="datalistOptions")
-                  each item in list
-                    option(value=item.學校名稱 ) #{item.學校名稱}
-                label 輸入部分文字點選相對應學校名稱
-            div(class='row mb-3')
+                input(type="text",class="form-control form-control-lg",list="datalistOptions",id="school",name="school",placeholder="Input School",maxlength='20',required)
+            div(class='row mb-3',style='display: none;')
               label(for="dept",class="col-sm-2 col-form-label col-form-label-lg") 科別*
               div(class="col-sm-10")
-                input(type="text",class="form-control form-control-lg",id="dept",name="dept",placeholder="目前就讀的科別(必填)",maxlength='20',required)
+                input(type="text",class="form-control form-control-lg",id="dept",name="dept",placeholder="目前就讀的科別(必填)",maxlength='20',value='海外學系')
             div(class='row mb-3')
-              label(for="stdname",class="col-sm-2 col-form-label col-form-label-lg") 您的姓名*
+              label(for="stdname",class="col-sm-2 col-form-label col-form-label-lg") 您的姓名 Name*
               div(class="col-sm-10")
-                input(type="text",class="form-control form-control-lg",id="stdname",name="stdname",placeholder="請輸入您的姓名(必填)",maxlength='30',required)
+                input(type="text",class="form-control form-control-lg",id="stdname",name="stdname",placeholder="First name, Last name",maxlength='30',required)
             div(class='row mb-3')
-              label(for="phone",class="col-sm-2 col-form-label col-form-label-lg") 連絡電話*
+              label(for="phone",class="col-sm-2 col-form-label col-form-label-lg") 連絡電話 Phone*
               div(class="col-sm-10")
-                input(type="tel",class="form-control form-control-lg",id="phone",name="phone",placeholder="請輸入連絡電話(必填)",maxlength='20',onkeypress="PhoneStyle(this);",required)
-                label 格式範例：0910-123456
+                input(type="tel",class="form-control form-control-lg",id="phone",name="phone",placeholder="Phone number",maxlength='20',onkeypress="PhoneStyle(this);",required)
+                label Format：(+886) 2-7738-8000 
             div(class='row mb-3')
-              label(for="birthday",class="col-sm-2 col-form-label col-form-label-lg") 您的生日*
+              label(for="birthday",class="col-sm-2 col-form-label col-form-label-lg") 您的生日 Birthday*
               div(class="col-sm-2")
-                select(class="form-select form-select-lg",id="birthYear",name="birthYear",placeholder="請輸入您的生日(必填)",required)
-                  - let x = ((new Date).getFullYear() - 16);
+                select(class="form-select form-select-lg",id="birthYear",name="birthYear",placeholder="Birthday",required)
+                  - let x = ((new Date).getFullYear() - 10);
                     while x >= ((new Date).getFullYear() - 60)
                       option(value=x ) #{x}
                       - x--  
-              label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") 年*
+              label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") Year
               div(class="col-sm-2")
-                select(class="form-select form-select-lg",id="birthMonth",name="birthMonth",placeholder="請輸入您的生日(必填)",required)
+                select(class="form-select form-select-lg",id="birthMonth",name="birthMonth",placeholder="Year",required)
                   - let y = 1;
                     while y <= 12
                       option(value=y ) #{y}
                       - y++                
-              label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") 月*
+              label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") Month
               div(class="col-sm-2")
-                select(class="form-select form-select-lg",id="birthday",name="birthday",placeholder="請輸入您的生日(必填)",required)
+                select(class="form-select form-select-lg",id="birthday",name="birthday",placeholder="Month",required)
                   - let z = 1;
                     while z <= 31
                       option(value=z) #{z}
                       - z++
-              label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") 日*
+              label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") Day
             div(class='row mb-3')
-              label(for="email",class="col-sm-2 col-form-label col-form-label-lg") 電子信箱
+              label(for="email",class="col-sm-2 col-form-label col-form-label-lg") 電子信箱 Email*
               div(class="col-sm-10")
-                input(type="email",class="form-control form-control-lg",id="email",name="email",placeholder="請輸入電子信箱",maxlength='50')
+                input(type="email",class="form-control form-control-lg",id="email",name="email",placeholder="E-mail",maxlength='50',required)
             div(class='row mb-3')
-              label(for="lineid",class="col-sm-2 col-form-label col-form-label-lg") LINE ID
+              label(for="lineid",class="col-sm-2 col-form-label col-form-label-lg") Contact App (optional)
               div(class="col-sm-10")
-                input(type="text",class="form-control form-control-lg",id="lineid",name="lineid",placeholder="請輸入LINEID",maxlength='50')
-            div(class='row mb-3')
+                input(type="text",class="form-control form-control-lg",id="lineid",name="lineid",placeholder="LINE ID or whatapp ID ",maxlength='50')
+            div(class='row mb-3' style='display:none;')
               label(for="entertype",class="col-sm-2 col-form-label col-form-label-lg") 欲就讀系所*
               div(class="col-sm-10")
-                select(class="form-select form-select-lg",id="entertype",name="entertype",required)
-                  option(selected,disabled,value="" ) --請選擇想就讀的系所--
-                  each dept in deptlist
-                    option(value=dept.val ) #{dept.name}
-            div(class='row mb-3')
+                select(class="form-select form-select-lg",id="entertype",name="entertype")
+                  option(value="1GO",selected) 海外學生
+            div(class='row mb-3' style="display: none;")
               label(class="col-sm-2 col-form-label col-form-label-lg") 欲就讀本校之原因*(可複選)
               div(class="col-sm-10")
                 div(class="form-check form-check-inline form-control-lg")
@@ -105,29 +99,23 @@ block content
                   label(class="form-check-label" ,for="inlineCheckbox11") (11)	遠東集團關係企業
                 br
                 div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox12",name="reason" ,value="其他")
+                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox12",name="reason" ,value="其他",checked)
                   label(class="form-check-label" ,for="inlineCheckbox12") (12)	其他(勾選需要填寫原因)
-              div(class='row mb-3',id="ext_reasonview",style="display:none;")
+              div(class='row mb-3',id="ext_reasonview")
                 label(for="other",class="col-sm-2 col-form-label col-form-label-lg") 勾選其他請填寫原因(限100字)
                 div(class="col-sm-10")
                   textarea(class="form-control form-control-lg",id="other",name="ext_reason",placeholder="選其他請填寫原因",row="2",maxlength='100')
-              div(class='row mb-3',id="ext_reasonview")
-                label(for="es_memo",class="col-sm-2 col-form-label col-form-label-lg") 留言(選填)
-                div(class="col-sm-10")
-                  textarea(class="form-control form-control-lg",id="es_memo",name="es_memo",placeholder="請輸入您想詢問的問題",row="2",maxlength='100')
+            div(class='row mb-3',id="ext_reasonview")
+              label(for="es_memo",class="col-sm-2 col-form-label col-form-label-lg") 留言(選填) Message (optional)
+              div(class="col-sm-10")
+                textarea(class="form-control form-control-lg",id="es_memo",name="es_memo",placeholder="Message",row="2",maxlength='100')
             div(class='row')
               div(class="d-flex justify-content-center")
-                button(type="reset",class="btn btn-warning",style="margin-right:1rem;") 重新填寫
-                button(type="submit",class="btn btn-primary",id="sentForm") 確認送出
+                button(type="reset",class="btn btn-warning",style="margin-right:1rem;") reset
+                button(type="submit",class="btn btn-primary",id="sentForm") submit
             div(class="row mt-3")
               div.col-12
-                p(style="color: black;") 注意：您所提供之個人資料僅作本校招生及相關統計分析使用，其餘均依照「個人資料保護法」相關規定辦理。
-
-	
-
-
-
-
+                p(style="color: black;display: none;") 注意：您所提供之個人資料僅作本校招生及相關統計分析使用，其餘均依照「個人資料保護法」相關規定辦理。
   script.
     document.getElementsByName("reason")[document.getElementsByName("reason").length-1].addEventListener('change',(e) => {
       if(e.target.checked) {
@@ -154,15 +142,15 @@ block content
           })
           .then(function (response) {
             if(response.data.result == 1) {
-              swal({title: '資料已送出，將為您轉至首頁。',icon: "success",button: "確定"}).then(() => {
+              swal({title: 'submit，link aeust。',icon: "success",button: "Yes"}).then(() => {
                 location.href = 'https://recruit.aeust.edu.tw';
               })                   
             } else {
-              swal({title: '資料送出失敗！',icon: "warning",button: "確定"})
+              swal({title: 'data submit error！',icon: "warning",button: "Yes"})
             }
           })
           .catch(function (error) {
-            swal({title: '網站發生錯誤！',icon: "warning",button: "確定"})
+            swal({title: 'web error！',icon: "warning",button: "Yes"})
             console.log(error);
           });
         }
@@ -179,7 +167,7 @@ block content
 
           if(document.getElementById('school').value.length < 4) {
             document.getElementById('school').setCustomValidity('字數太少')
-            swal({title: '目前就讀學校輸入少於四個字，請輸入後用點選的方式，點選相對應學校。',icon: "warning",button: "確定"})
+            swal({title: 'input School',icon: "warning",button: "Yes"})
             return ;
           } else {
             document.getElementById('school').setCustomValidity('')
@@ -203,13 +191,13 @@ block content
                   if(response.data.result == 1) {
                     if(response.data.data[0][0].row_count == 1) {
                       swal({
-                        title: "您已重複填報！",
-                        text: "若想填報其他系所，由專人與您聯繫，請按確定送出資料。",
+                        title: "Duplicate report",
+                        text: "not is Duplicate report",
                         icon: "warning",
                         buttons: {
-                          cancel: "取消送出",
+                          cancel: "cancel",
                           catch: {
-                            text: "確認送出",
+                            text: "submit",
                             value: true,
                           }
                         },
@@ -223,11 +211,11 @@ block content
                       submit_data();
                     }                                
                   } else {
-                    swal({title: '資料送出失敗！',icon: "warning",button: "確定"})
+                    swal({title: 'Data Submit fail！',icon: "warning",button: "確定"})
                   }
                 })
                 .catch(function (error) {
-                  swal({title: '網站發生錯誤！',icon: "warning",button: "確定"})
+                  swal({title: 'Webside error！',icon: "warning",button: "確定"})
                   console.log(error);
                 });
               } else {

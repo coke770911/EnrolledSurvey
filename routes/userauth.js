@@ -20,7 +20,7 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
 
 
 router.all('/*',function (req, res, next) {
-  if(!(req.session.login == 1 && (req.session.admin == 1))) {
+  if(!(req.session.login == 1)) {
     res.render('lockin', {
       title: '就讀意願調查系統',
       login: req.session.login
@@ -31,8 +31,13 @@ router.all('/*',function (req, res, next) {
 });
 
 router.get('/view', (req, res, next) => {
+  let paramter = {
+    replacements: {
+      dept: req.session.dept
+    }
+  }
   const pormisefn = new Promise((resolve, reject) => {
-    sequelize.query("SELECT DISTINCT [as_OitCode],[as_UnitCName] FROM [ARCHIVES].[dbo].[v_ref_assetAndMasrt] WHERE [as_OitCode] <> 'AL'")
+    sequelize.query('[ARCHIVES].[dbo].[getEnrolledSurveyDeptList] :dept;',paramter)
       .then(function (DataList) {
       resolve({data: DataList,result: 1});
     })
@@ -88,7 +93,12 @@ router.post('/',upload.any(), (req, res, next) => {
 
 
 router.get('/',(req, res, next) => {
-  sequelize.query("SELECT * FROM [ARCHIVES].[dbo].[v_ref_assetAndMasrt];")
+  let paramter = {
+    replacements: {
+      dept: req.session.dept
+    }
+  }
+  sequelize.query("[ARCHIVES].[dbo].[getEnrolledSurveyAuthList] :dept;",paramter)
   .then(function (DataList) {
     res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList[0],result: 1}))
   })

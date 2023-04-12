@@ -14,6 +14,9 @@ block content
               label(for="es_stdname" ,class="form-label") 姓名
               input(type="text" ,class="form-control" ,id="es_stdname" ,disabled)
             div(class="mb-3")
+              label(for="es_birthday" ,class="form-label") 生日
+              input(type="text" ,class="form-control" ,id="es_birthday" ,disabled)  
+            div(class="mb-3")
               label(for="es_school" ,class="form-label") 目前學校
               input(type="text" ,class="form-control" ,id="es_school" ,disabled)
             div(class="mb-3")
@@ -94,6 +97,7 @@ block content
         {title:"目前學校", field:"es_school"},
         {title:"目前科別", field:"es_dept"},
         {title:"屬意科系", field:"dept_name"},
+        {title:"生日", field:"es_birthday"},
         {title:"連絡電話", field:"es_phone"},
         {title:"LINE ID", field:"es_lineid"},
         {title:"信箱", field:"es_email"},
@@ -119,6 +123,7 @@ block content
       document.getElementById('es_modify_datetime').innerText = "最後更新時間：" + row._row.data.es_modify_datetime
       document.getElementById('es_no').value = row._row.data.es_no
       document.getElementById('es_stdname').value = row._row.data.es_stdname
+      document.getElementById('es_birthday').value = row._row.data.es_birthday
       document.getElementById('es_school').value = row._row.data.es_school
       document.getElementById('es_dept').value = row._row.data.es_dept
       document.getElementById('dept_name').value = row._row.data.dept_name

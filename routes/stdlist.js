@@ -31,59 +31,60 @@ router.all('/*',function (req, res, next) {
 });
 
 
-let enterdeptlist = [{
-  val: '2NS',
-  name: '日間部二技護理系'
-},
-{
-  val: '1DN',
-  name: '日間部四技工商業設計系'
-},
-{
-  val: '1IM',
-  name: '日間部四技工業管理系'
-},
-{
-  val: '1MD',
-  name: '日間部四技行銷與流通管理系'
-},
-{
-  val: '1MT',
-  name: '日間部四技材料與纖維系'
-},
-{
-  val: '1CE',
-  name: '日間部四技通訊工程系'
-},
-{
-  val: '1MI',
-  name: '日間部四技資訊管理系'
-},
-{
-  val: '1ET',
-  name: '日間部四技電子工程系'
-},
-{
-  val: '1EE',
-  name: '日間部四技電機工程系'
-},
-{
-  val: '1ME',
-  name: '日間部四技機械工程系'
-},
-{
-  val: '1HA',
-  name: '日間部四技醫務管理系'
-},
-{
-  val: '1NS',
-  name: '日間部四技護理系'
-},
-{
-  val: 'RNS',
-  name: '進修部二技護理系'
-}
-]
+let enterdeptlist = [
+  {
+    val: '1MT',
+    name: '日間部四技材料與纖維系'
+  },
+  {
+    val: '1DN',
+    name: '日間部四技工商業設計系'
+  },
+  {
+    val: '1ME',
+    name: '日間部四技機械工程系'
+  },
+  {
+    val: '1CE',
+    name: '日間部四技通訊工程系'
+  },
+  {
+    val: '1ET',
+    name: '日間部四技電子工程系'
+  },
+  {
+    val: '1EE',
+    name: '日間部四技電機工程系'
+  },
+  {
+    val: '1IM',
+    name: '日間部四技工業管理系'
+  },
+  {
+    val: '1HA',
+    name: '日間部四技醫務管理系'
+  },
+  {
+    val: '1MI',
+    name: '日間部四技資訊管理系'
+  },
+  {
+    val: '1MD',
+    name: '日間部四技行銷與流通管理系'
+  },
+  {
+    val: '1NS',
+    name: '日間部四技護理系'
+  },
+  {
+    val: '2NS',
+    name: '日間部二技護理系'
+  },
+  {
+    val: 'RNS',
+    name: '進修部二技護理系'
+  }
+  ]
 
 router.get('/view', function (req, res, next) {
     res.render('stdlist', {
@@ -99,8 +100,8 @@ router.post('/', upload.any(),function (req, res, next) {
     replacements: {
       es_no: 0,
       es_enterdept: req.session.dept,
-      sdate: req.body.sdate.replace('T', ' ').replace('Z', '') || '',
-      edate: req.body.edate.replace('T', ' ').replace('Z', '') || '',
+      sdate: req.body.sdate ? req.body.sdate.replace('T', ' ').replace('Z', '') + ' 00:00:00': '' ,
+      edate: req.body.edate ? req.body.edate.replace('T', ' ').replace('Z', '') + ' 23:59:59': '' ,
     }
   }
 
@@ -114,8 +115,7 @@ router.post('/', upload.any(),function (req, res, next) {
   })
   .catch(err => {
     res.set({'Content-Type': 'application/json'}).send(JSON.stringify({errMsg: 'API發生錯誤。',result: 0}))
-  });
-  
+  }); 
 });
 
 
