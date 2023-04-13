@@ -18,7 +18,7 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
   }
 });
 
-
+//檢查登入
 router.all('/*',function (req, res, next) {
   if(!req.session.login) {
     res.render('lockin', {
@@ -29,7 +29,6 @@ router.all('/*',function (req, res, next) {
     next()
   }
 });
-
 
 let enterdeptlist = [
   {

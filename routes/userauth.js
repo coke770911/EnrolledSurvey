@@ -18,7 +18,6 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
   }
 });
 
-
 router.all('/*',function (req, res, next) {
   if(!(req.session.login == 1)) {
     res.render('lockin', {

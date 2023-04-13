@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
-
 var multer  = require('multer')
 var upload = multer()
+const csv = require('csvtojson');
+const Null = require('tedious/lib/data-types/null');
 
 const {
   Sequelize
@@ -16,11 +17,9 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
     }
   }
 });
-const csv = require('csvtojson');
-const Null = require('tedious/lib/data-types/null');
 
 /**
- * 維修葉面 換path
+ * 維修頁面 換path
  */
 router.get('/t', function (req, res, next) {
   res.render('pause',{title: '亞東科技大學 就讀意願調查'});
@@ -128,9 +127,8 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
     });
   
 });
-/**
- * 送出資料
- */
+
+// 送出資料
 router.post('/', upload.any(),function (req, res, next) {
   let birthdayStr = '';
   birthdayStr += (req.body.birthYear-1911).toString().length > 2 ? (req.body.birthYear-1911).toString() : '0' + (req.body.birthYear-1911).toString();
@@ -138,7 +136,8 @@ router.post('/', upload.any(),function (req, res, next) {
   birthdayStr += req.body.birthday.toString().length > 1 ? req.body.birthday.toString() : '0' + req.body.birthday.toString();
   
   if(birthdayStr.length != 7) {
-	res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未填寫,Birthday input error',result: 0}));
+	  res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未填寫,Birthday input error',result: 0}));
+    return;
   }
   
   let paramter = {
@@ -156,7 +155,7 @@ router.post('/', upload.any(),function (req, res, next) {
       es_memo: req.body.es_memo,
     }
   }
-  console.dir(paramter)
+
   sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept ,:es_reason ,:es_ext_reason ,:es_memo;", paramter)
     .then(function (DataList) {
       console.dir(DataList)

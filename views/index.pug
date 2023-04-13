@@ -33,9 +33,12 @@ block content
               label(for="birthday",class="col-sm-2 col-form-label col-form-label-lg") 您的生日*
               div(class="col-sm-2")
                 select(class="form-select form-select-lg",id="birthYear",name="birthYear",placeholder="請輸入您的生日(必填)",required)
-                  - let x = ((new Date).getFullYear() - 16);
+                  - let x = ((new Date).getFullYear() - 15);
                     while x >= ((new Date).getFullYear() - 60)
-                      option(value=x ) #{x}
+                      if ((new Date).getFullYear() - 18) === x
+                        option(value=x selected) #{x}
+                      else 
+                        option(value=x ) #{x}
                       - x--  
               label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") 年*
               div(class="col-sm-2")
