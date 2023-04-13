@@ -106,10 +106,10 @@ router.get('/', function (req, res, next) {
  */
 router.post('/getCheckUser', upload.any(),function (req, res, next) {
   let birthdayStr = '';
-  birthdayStr += (req.body.birthYear-1911).toString().length > 2 ? (req.body.birthYear-1911).toString() : '0' + (req.body.birthYear-1911).toString();
-  birthdayStr += req.body.birthMonth.toString().length > 1 ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString();
-  birthdayStr += req.body.birthday.toString().length > 1 ? req.body.birthday.toString() : '0' + req.body.birthday.toString();
-  
+  birthdayStr += (Number(req.body.birthYear) - 1911) > 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
+  birthdayStr += (Number(req.body.birthMonth) > 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString() 
+  birthdayStr += (Number(req.body.birthday) > 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString() 
+
   let paramter = {
     replacements: {
       es_stdname: req.body.stdname,
@@ -129,14 +129,14 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
 });
 
 // 送出資料
-router.post('/', upload.any(),function (req, res, next) {
+router.post('/', upload.any(),(req, res, next) => {
   let birthdayStr = '';
-  birthdayStr += (req.body.birthYear-1911).toString().length > 2 ? (req.body.birthYear-1911).toString() : '0' + (req.body.birthYear-1911).toString();
-  birthdayStr += req.body.birthMonth.toString().length > 1 ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString();
-  birthdayStr += req.body.birthday.toString().length > 1 ? req.body.birthday.toString() : '0' + req.body.birthday.toString();
-  
+  birthdayStr += (Number(req.body.birthYear) - 1911) > 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
+  birthdayStr += (Number(req.body.birthMonth) > 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString() 
+  birthdayStr += (Number(req.body.birthday) > 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString() 
+
   if(birthdayStr.length != 7) {
-	  res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未填寫,Birthday input error',result: 0}));
+    res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未填寫,Birthday input error',result: 0}));
     return;
   }
   
