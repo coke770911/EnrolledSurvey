@@ -31,9 +31,7 @@ router.get('/en', function (req, res, next) {
   });
 });
 
-/**
- * 主要資料填寫畫面
- */
+//主要資料填寫畫面
 router.get('/', function (req, res, next) {
   let enterdeptlist = [
   {
@@ -101,9 +99,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
-/**
- *  先確認重複填的部分
- */
+//先確認重複填的部分
 router.post('/getCheckUser', upload.any(),function (req, res, next) {
   let birthdayStr = '';
   birthdayStr += (Number(req.body.birthYear) - 1911) > 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
