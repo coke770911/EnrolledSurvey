@@ -127,7 +127,7 @@ router.put('/', upload.any(),function (req, res, next) {
       es_is_none: req.body.es_is_none || 1,
     }
   }
- 
+
   sequelize.query("[dbo].[sp_updateEnrolledSurvey] :es_no ,:es_remark ,:retagdept ,:es_is_none", paramter)
     .then(function (DataList) {          
       if(DataList[0].length > 0) {
@@ -141,7 +141,7 @@ router.put('/', upload.any(),function (req, res, next) {
     });
 });
 
-       
+
 router.delete('/', upload.any(),function (req, res, next) {
   let paramter = {
     replacements: {
