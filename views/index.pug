@@ -125,12 +125,6 @@ block content
             div(class="row mt-3")
               div.col-12
                 p(style="color: black;") 注意：您所提供之個人資料僅作本校招生及相關統計分析使用，其餘均依照「個人資料保護法」相關規定辦理。
-
-	
-
-
-
-
   script.
     document.getElementsByName("reason")[document.getElementsByName("reason").length-1].addEventListener('change',(e) => {
       if(e.target.checked) {
@@ -148,7 +142,6 @@ block content
 
     let forms = document.querySelectorAll('.needs-validation')
     Array.prototype.slice.call(forms).forEach(function (form) {
-
         let submit_data = function() {
           axios({
             method: "post",
@@ -166,7 +159,6 @@ block content
           })
           .catch(function (error) {
             swal({title: '網站發生錯誤！',icon: "warning",button: "確定"})
-            console.log(error);
           });
         }
 
@@ -188,6 +180,30 @@ block content
             document.getElementById('school').setCustomValidity('')
           }
 
+          if(document.getElementById('dept').value.length <= 0) {
+            document.getElementById('dept').setCustomValidity('字數太少')
+            swal({title: '您目前的科系別尚未填寫。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('dept').setCustomValidity('')
+          }
+
+          if(document.getElementById('stdname').value.length <= 0) {
+            document.getElementById('stdname').setCustomValidity('字數太少')
+            swal({title: '您的姓名尚未填寫。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('stdname').setCustomValidity('')
+          }
+
+          if(document.getElementById('phone').value.length <= 0) {
+            document.getElementById('phone').setCustomValidity('字數太少')
+            swal({title: '您的聯絡電話尚未填寫。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('phone').setCustomValidity('')
+          }
+
           if (form.checkValidity()) {
               let chkBoxSelect = false;
               document.querySelectorAll('.form-check-input').forEach((el) => { 
@@ -195,14 +211,12 @@ block content
                   chkBoxSelect = true;
                 }
               })
-
               if(chkBoxSelect) {
                 axios({
                   method: "post",
                   url: "/getCheckUser",
                   data: new FormData(form)
-                })
-                .then(function (response) {
+                }).then(function (response) {
                   if(response.data.result == 1) {
                     if(response.data.data[0][0].row_count == 1) {
                       swal({
@@ -216,8 +230,7 @@ block content
                             value: true,
                           }
                         },
-                      })
-                      .then((isValue) => {
+                      }).then((isValue) => {
                         if(isValue) {
                           submit_data();
                         }
@@ -225,12 +238,10 @@ block content
                     } else {
                       submit_data();
                     }                                
-                  } else {
-                    swal({title: '資料送出失敗！',icon: "warning",button: "確定"})
                   }
                 })
                 .catch(function (error) {
-                  swal({title: '網站發生錯誤！',icon: "warning",button: "確定"})
+                  swal({title: '網站檢查時發生錯誤！',icon: "warning",button: "確定"})
                   console.log(error);
                 });
               } else {
