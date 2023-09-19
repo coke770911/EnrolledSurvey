@@ -154,7 +154,7 @@ block content
                 location.href = 'https://recruit.aeust.edu.tw';
               })                   
             } else {
-              swal({title: '資料送出失敗！',icon: "warning",button: "確定"})
+              swal({title: response.data.errMsg ,icon: "warning",button: "確定"})
             }
           })
           .catch(function (error) {

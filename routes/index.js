@@ -21,10 +21,11 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
 /**
  * 維修頁面 換path
  */
-router.get('/t', function (req, res, next) {
+router.all('/', function (req, res, next) {
   res.render('pause',{title: '亞東科技大學 就讀意願調查'});
 });
 
+//英文網頁
 router.get('/en', function (req, res, next) {
   res.render('indexall', {
     title: '亞東科技大學 就讀意願調查',
@@ -125,7 +126,7 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
 });
 
 // 送出資料
-router.post('/', upload.any(),(req, res, next) => {
+router.post('/', upload.any(), async (req, res, next) => {
   let birthdayStr = '';
   birthdayStr += (Number(req.body.birthYear) - 1911) >= 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
   birthdayStr += (Number(req.body.birthMonth) >= 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString() 
@@ -136,6 +137,14 @@ router.post('/', upload.any(),(req, res, next) => {
     return;
   }
   
+  let StrChkArr = Object.values(req.body)
+  for(i = 0; i < StrChkArr.length ; i++) {
+    if(StrChkArr[i].includes('=') || StrChkArr[i].includes('--')) {
+      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '輸入資料請勿輸入含有(= --)相關符號。',result: 0}))
+      return
+    }
+  }
+
   let paramter = {
     replacements: {
       es_school: req.body.school,
@@ -149,10 +158,11 @@ router.post('/', upload.any(),(req, res, next) => {
       es_reason: Array.isArray(req.body.reason) ? req.body.reason.join() : req.body.reason,
       es_ext_reason: req.body.ext_reason,
       es_memo: req.body.es_memo,
+      es_ip_address: req.socket.remoteAddress
     }
   }
 
-  sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept ,:es_reason ,:es_ext_reason ,:es_memo;", paramter)
+  sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept ,:es_reason ,:es_ext_reason ,:es_memo ,:es_ip_address;", paramter)
     .then(function (DataList) {
       console.dir(DataList)
       res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList,result: 1}))
