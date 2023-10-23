@@ -15,16 +15,19 @@ block content
               input(type="text" ,class="form-control" ,id="es_stdname" ,disabled)
             div(class="mb-3")
               label(for="es_birthday" ,class="form-label") 生日
-              input(type="text" ,class="form-control" ,id="es_birthday" ,disabled)  
+              input(type="text" ,class="form-control" ,id="es_birthday" name="es_birthday")  
             div(class="mb-3")
               label(for="es_school" ,class="form-label") 目前學校
-              input(type="text" ,class="form-control" ,id="es_school" ,disabled)
+              input(type="text" ,class="form-control" ,id="es_school" name="es_school")
             div(class="mb-3")
               label(for="es_dept" ,class="form-label") 目前科別
-              input(type="text" ,class="form-control" ,id="es_dept" ,disabled)
+              input(type="text" ,class="form-control" ,id="es_dept" name="es_dept")
             div(class="mb-3")
-              label(for="dept_name" ,class="form-label") 屬意科系
-              input(type="text" ,class="form-control" ,id="dept_name" ,disabled)
+              label(for="dept_name" ,class="form-label") 第一志願科系
+              input(type="text" ,class="form-control" ,id="es_enterdeptName1" ,disabled)
+            div(class="mb-3")
+              label(for="dept_name" ,class="form-label") 第二志願科系
+              input(type="text" ,class="form-control" ,id="es_enterdeptName2" ,disabled)
             div(class="mb-3")
               label(for="es_phone" ,class="form-label") 連絡電話
               input(type="text" ,class="form-control" ,id="es_phone" ,disabled)
@@ -35,7 +38,7 @@ block content
               label(for="es_email" ,class="form-label") 信箱
               input(type="text" ,class="form-control" ,id="es_email" ,disabled)
             div(class="mb-3")
-              label(for="es_reason" ,class="form-label") 選擇本校原因
+              label(for="es_reason" ,class="form-label") 如何知道本校
               textarea(class="form-control" ,id="es_reason" ,rows="3" ,disabled)
             div(class="mb-3")
               label(for="es_memo" ,class="form-label") 其他詢問的問題
@@ -44,7 +47,7 @@ block content
               label(for="es_remark" ,class="form-label") 處理備註
               textarea(name="es_remark",class="form-control" ,id="es_remark" ,rows="3")
               label(class="form-label",id="es_modify_datetime") 
-            div(class="mb-3")
+            div(class="mb-3" style="display:none")
               label(for="retagdept" ,class="form-label") 轉介其他系所處理
               select(name="retagdept",for="retagdept" ,class="form-select")
                 option(value="") 不轉介 
@@ -96,7 +99,9 @@ block content
         {title:"姓名", field:"es_stdname",hozAlign:"center"},
         {title:"目前學校", field:"es_school"},
         {title:"目前科別", field:"es_dept"},
-        {title:"屬意科系", field:"dept_name"},
+        {title:"身分別", field:"es_stdtype"},
+        {title:"第一志願科系", field:"es_enterdeptName1"},
+        {title:"第二志願科系", field:"es_enterdeptName2"},
         {title:"生日", field:"es_birthday"},
         {title:"連絡電話", field:"es_phone"},
         {title:"LINE ID", field:"es_lineid"},
@@ -116,7 +121,7 @@ block content
     document.getElementById("download-xlsx").addEventListener("click", function(){
       table.download("xlsx", "就讀意願清單.xlsx", {sheetName:"sheet"});
     });
-   
+
     table.on("rowClick", function(e, row){
       document.getElementById("dataForm").reset();
       document.getElementById('header-title').innerText = "編輯"
@@ -126,7 +131,8 @@ block content
       document.getElementById('es_birthday').value = row._row.data.es_birthday
       document.getElementById('es_school').value = row._row.data.es_school
       document.getElementById('es_dept').value = row._row.data.es_dept
-      document.getElementById('dept_name').value = row._row.data.dept_name
+      document.getElementById('es_enterdeptName1').value = row._row.data.es_enterdeptName1
+      document.getElementById('es_enterdeptName2').value = row._row.data.es_enterdeptName2
       document.getElementById('es_phone').value = row._row.data.es_phone
       document.getElementById('es_email').value = row._row.data.es_email
       document.getElementById('es_lineid').value = row._row.data.es_lineid

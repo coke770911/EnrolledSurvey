@@ -94,6 +94,7 @@ router.get('/view', function (req, res, next) {
     });
 });
 
+//搜尋學生清單
 router.post('/', upload.any(),function (req, res, next) {
   let paramter = {
     replacements: {
@@ -117,7 +118,7 @@ router.post('/', upload.any(),function (req, res, next) {
   }); 
 });
 
-
+//更新註記
 router.put('/', upload.any(),function (req, res, next) {
   let paramter = {
     replacements: {
@@ -141,7 +142,7 @@ router.put('/', upload.any(),function (req, res, next) {
     });
 });
 
-
+//軟刪除 學生資料
 router.delete('/', upload.any(),function (req, res, next) {
   let paramter = {
     replacements: {

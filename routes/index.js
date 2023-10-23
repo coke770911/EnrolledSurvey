@@ -21,13 +21,20 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
 /**
  * 維修頁面 換path
  */
+/*
 router.all('/', function (req, res, next) {
   res.render('pause',{title: '亞東科技大學 就讀意願調查'});
 });
+*/
 
 //英文網頁
 router.get('/en', function (req, res, next) {
+  /*
   res.render('indexall', {
+    title: '亞東科技大學 就讀意願調查',
+  });
+  */
+  res.render('index', {
     title: '亞東科技大學 就讀意願調查',
   });
 });
@@ -125,6 +132,7 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
   
 });
 
+
 // 送出資料
 router.post('/', upload.any(), async (req, res, next) => {
   let birthdayStr = '';
@@ -149,12 +157,14 @@ router.post('/', upload.any(), async (req, res, next) => {
     replacements: {
       es_school: req.body.school,
       es_dept: req.body.dept,
+      es_stdtype: req.body.stdtype,
       es_stdname: req.body.stdname,
       es_phone: req.body.phone,
       es_birthday: birthdayStr,
       es_email: req.body.email,
       es_lineid: req.body.lineid,
-      es_enterdept: req.body.entertype,
+      es_enterdept1: req.body.entertype1,
+      es_enterdept2: req.body.entertype2,
       es_reason: Array.isArray(req.body.reason) ? req.body.reason.join() : req.body.reason,
       es_ext_reason: req.body.ext_reason,
       es_memo: req.body.es_memo,
@@ -162,7 +172,7 @@ router.post('/', upload.any(), async (req, res, next) => {
     }
   }
 
-  sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept ,:es_reason ,:es_ext_reason ,:es_memo ,:es_ip_address;", paramter)
+  sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdtype,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept1 ,:es_enterdept2 ,:es_reason ,:es_ext_reason ,:es_memo ,:es_ip_address;", paramter)
     .then(function (DataList) {
       console.dir(DataList)
       res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList,result: 1}))

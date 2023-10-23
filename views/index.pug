@@ -21,6 +21,18 @@ block content
               div(class="col-sm-10")
                 input(type="text",class="form-control form-control-lg",id="dept",name="dept",placeholder="目前就讀的科別(必填)",maxlength='20',required)
             div(class='row mb-3')
+              label(for="stdtype",class="col-sm-2 col-form-label col-form-label-lg") 身分別*     
+              div(class="col-sm-4 mb-3") 
+                select(class="form-select form-select-lg",id="stdtype",name="stdtype",placeholder="身分別",required)
+                  option(selected,disabled,value="" ) --請選擇身分別--
+                  option(value="高中生" ) 高中生
+                  option(value="四技生" ) 四技生
+                  option(value="二技生" ) 二技生
+                  option(value="轉學生" ) 轉學生
+                  option(value="其他" ) 其他
+              div(class="col-sm-6") 
+                input(class="form-control form-control-lg w-100" tpye="text" id ="ext_stdtype" name="ext_stdtype" placeholder="身分別選其他 請填寫(必填)" style="display: none;")
+            div(class='row mb-3')
               label(for="stdname",class="col-sm-2 col-form-label col-form-label-lg") 您的姓名*
               div(class="col-sm-10")
                 input(type="text",class="form-control form-control-lg",id="stdname",name="stdname",placeholder="請輸入您的姓名(必填)",maxlength='30',required)
@@ -32,25 +44,25 @@ block content
             div(class='row mb-3')
               label(for="birthday",class="col-sm-2 col-form-label col-form-label-lg") 您的生日*
               div(class="col-sm-2")
-                select(class="form-select form-select-lg",id="birthYear",name="birthYear",placeholder="請輸入您的生日(必填)",required)
+                select(class="form-select form-select-lg",id="birthYear",name="birthYear",placeholder="請輸入您的出生年(必填)",required)
                   - let x = ((new Date).getFullYear() - 15);
+                    option(selected,disabled,value="") --請選擇---
                     while x >= ((new Date).getFullYear() - 60)
-                      if ((new Date).getFullYear() - 18) === x
-                        option(value=x selected) #{x}
-                      else 
-                        option(value=x ) #{x}
+                      option(value=x ) #{x}
                       - x--  
               label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") 年*
               div(class="col-sm-2")
-                select(class="form-select form-select-lg",id="birthMonth",name="birthMonth",placeholder="請輸入您的生日(必填)",required)
+                select(class="form-select form-select-lg",id="birthMonth",name="birthMonth",placeholder="請輸入您的出生月份(必填)",required)
                   - let y = 1;
+                    option(selected,disabled,value="") --請選擇---
                     while y <= 12
                       option(value=y ) #{y}
                       - y++                
               label(for="birthday",class="col-sm-1 col-form-label col-form-label-lg") 月*
               div(class="col-sm-2")
-                select(class="form-select form-select-lg",id="birthday",name="birthday",placeholder="請輸入您的生日(必填)",required)
+                select(class="form-select form-select-lg",id="birthday",name="birthday",placeholder="請輸入您的出生日(必填)",required)
                   - let z = 1;
+                    option(selected,disabled,value="") --請選擇---
                     while z <= 31
                       option(value=z) #{z}
                       - z++
@@ -65,59 +77,37 @@ block content
                 input(type="text",class="form-control form-control-lg",id="lineid",name="lineid",placeholder="請輸入LINEID",maxlength='50')
             div(class='row mb-3')
               label(for="entertype",class="col-sm-2 col-form-label col-form-label-lg") 欲就讀系所*
-              div(class="col-sm-10")
-                select(class="form-select form-select-lg",id="entertype",name="entertype",required)
-                  option(selected,disabled,value="" ) --請選擇想就讀的系所--
+              div(class="col-sm-5 mb-3")
+                select(class="form-select form-select-lg",id="entertype1",name="entertype1",required)
+                  option(selected,disabled,value="" ) --請選擇第一志願系所--
+                  each dept in deptlist
+                    option(value=dept.val ) #{dept.name}
+              div(class="col-sm-5")
+                select(class="form-select form-select-lg",id="entertype2",name="entertype2",required)
+                  option(selected,disabled,value="" ) --請選擇第二志願系所--
                   each dept in deptlist
                     option(value=dept.val ) #{dept.name}
             div(class='row mb-3')
-              label(class="col-sm-2 col-form-label col-form-label-lg") 欲就讀本校之原因*(可複選)
+              label(class="col-sm-2 col-form-label col-form-label-lg") 如何了解本校資訊*
               div(class="col-sm-10")
                 div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox1",name="reason" ,value="交通便利")
-                  label(class="form-check-label" ,for="inlineCheckbox1") (1)	交通便利
+                  input(class="form-check-input" ,type="radio" ,id="inlineCheckbox1",name="reason" ,value="入班宣導")
+                  label(class="form-check-label" ,for="inlineCheckbox1") 入班宣導
                 div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox2",name="reason" ,value="優渥獎學金")
-                  label(class="form-check-label" ,for="inlineCheckbox2") (2)	優渥獎學金
+                  input(class="form-check-input" ,type="radio" ,id="inlineCheckbox2",name="reason" ,value="升學博覽會")
+                  label(class="form-check-label" ,for="inlineCheckbox2") 升學博覽會
                 div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox3",name="reason" ,value="社團活躍")
-                  label(class="form-check-label" ,for="inlineCheckbox3") (3)	社團活躍
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox4",name="reason" ,value="提供宿舍")
-                  label(class="form-check-label" ,for="inlineCheckbox4") (4)	提供宿舍
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox5",name="reason" ,value="廠商實習")
-                  label(class="form-check-label" ,for="inlineCheckbox5") (5)	廠商實習
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox6",name="reason" ,value="高中職老師推薦")
-                  label(class="form-check-label" ,for="inlineCheckbox6") (6)	高中職老師推薦
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox7",name="reason" ,value="親朋好友推薦")
-                  label(class="form-check-label" ,for="inlineCheckbox7") (7)	親朋好友推薦
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox8",name="reason" ,value="學校知名度高")
-                  label(class="form-check-label" ,for="inlineCheckbox8") (8)	學校知名度高
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox9",name="reason" ,value="學校校風好")
-                  label(class="form-check-label" ,for="inlineCheckbox9") (9)	學校校風好
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox10",name="reason" ,value="教學設備新穎")
-                  label(class="form-check-label" ,for="inlineCheckbox10") (10)	教學設備新穎
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox11",name="reason" ,value="遠東集團關係企業")
-                  label(class="form-check-label" ,for="inlineCheckbox11") (11)	遠東集團關係企業
+                  input(class="form-check-input" ,type="radio" ,id="inlineCheckbox3",name="reason" ,value="來校參訪")
+                  label(class="form-check-label" ,for="inlineCheckbox3") 來校參訪
                 br
-                div(class="form-check form-check-inline form-control-lg")
-                  input(class="form-check-input" ,type="checkbox" ,id="inlineCheckbox12",name="reason" ,value="其他")
-                  label(class="form-check-label" ,for="inlineCheckbox12") (12)	其他(勾選需要填寫原因)
-              div(class='row mb-3',id="ext_reasonview",style="display:none;")
-                label(for="other",class="col-sm-2 col-form-label col-form-label-lg") 勾選其他請填寫原因(限100字)
-                div(class="col-sm-10")
-                  textarea(class="form-control form-control-lg",id="other",name="ext_reason",placeholder="選其他請填寫原因",row="2",maxlength='100')
-              div(class='row mb-3',id="ext_reasonview")
-                label(for="es_memo",class="col-sm-2 col-form-label col-form-label-lg") 留言(選填)
-                div(class="col-sm-10")
-                  textarea(class="form-control form-control-lg",id="es_memo",name="es_memo",placeholder="請輸入您想詢問的問題",row="2",maxlength='100')
+                div(class="form-check form-check-inline form-control-lg w-100")
+                  input(class="form-check-input" ,type="radio" ,id="inlineCheckbox4",name="reason" ,value="其他")
+                  label(class="form-check-label" ,for="inlineCheckbox4") 其他(勾選其他需要填寫原因)
+                  input(class="form-control form-control-lg w-100" tpye="text" id ="ext_reasonview" name="ext_reason" style="display: none;")
+            div(class='row mb-3')
+              label(for="es_memo",class="col-sm-2 col-form-label col-form-label-lg") 留言(選填)
+              div(class="col-sm-10")
+                textarea(class="form-control form-control-lg",id="es_memo",name="es_memo",placeholder="請輸入您想詢問的問題",row="2",maxlength='100')
             div(class='row')
               div(class="d-flex justify-content-center")
                 button(type="reset",class="btn btn-warning",style="margin-right:1rem;") 重新填寫
@@ -126,12 +116,24 @@ block content
               div.col-12
                 p(style="color: black;") 注意：您所提供之個人資料僅作本校招生及相關統計分析使用，其餘均依照「個人資料保護法」相關規定辦理。
   script.
-    document.getElementsByName("reason")[document.getElementsByName("reason").length-1].addEventListener('change',(e) => {
-      if(e.target.checked) {
-        document.getElementById("ext_reasonview").style.display = ""
-      } else {
-        document.getElementById("ext_reasonview").style.display = "none"
-      }
+    Array.from(document.querySelectorAll('input[name=reason]')).forEach(element => {
+      element.addEventListener('change', (event) => {
+        if(event.target.id === 'inlineCheckbox4') {
+          document.getElementById("ext_reasonview").style.display = ""
+        } else {
+          document.getElementById("ext_reasonview").style.display = "none"
+        }
+      })
+    })
+
+    document.querySelectorAll('select[name=stdtype]').forEach(element => {
+      element.addEventListener('change', (event) => {
+        if(event.target.value === '其他') {
+          document.getElementById("ext_stdtype").style.display = ""
+        } else {
+          document.getElementById("ext_stdtype").style.display = "none"
+        }
+      })
     })
 
     let PhoneStyle = function(e) {
@@ -188,6 +190,14 @@ block content
             document.getElementById('dept').setCustomValidity('')
           }
 
+          if(document.getElementById('stdtype').value == "") {
+            document.getElementById('stdtype').setCustomValidity('尚未選擇身分別。')
+            swal({title: '請選擇您的身分別。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('stdtype').setCustomValidity('')
+          }
+
           if(document.getElementById('stdname').value.length <= 0) {
             document.getElementById('stdname').setCustomValidity('字數太少')
             swal({title: '您的姓名尚未填寫。',icon: "warning",button: "確定"})
@@ -204,49 +214,74 @@ block content
             document.getElementById('phone').setCustomValidity('')
           }
 
-          if (form.checkValidity()) {
-              let chkBoxSelect = false;
-              document.querySelectorAll('.form-check-input').forEach((el) => { 
-                if(el.checked) {
-                  chkBoxSelect = true;
-                }
-              })
-              if(chkBoxSelect) {
-                axios({
-                  method: "post",
-                  url: "/getCheckUser",
-                  data: new FormData(form)
-                }).then(function (response) {
-                  if(response.data.result == 1) {
-                    if(response.data.data[0][0].row_count == 1) {
-                      swal({
-                        title: "您已重複填報！",
-                        text: "若想填報其他系所，可由電話訪談時與招生人員說明。",
-                        icon: "warning",
-                        buttons: {
-                          cancel: "取消送出",
-                          catch: {
-                            text: "確認送出",
-                            value: true,
-                          }
-                        },
-                      }).then((isValue) => {
-                        if(isValue) {
-                          submit_data();
-                        }
-                      });
-                    } else {
-                      submit_data();
-                    }                                
-                  }
-                })
-                .catch(function (error) {
-                  swal({title: '網站檢查時發生錯誤！',icon: "warning",button: "確定"})
-                  console.log(error);
-                });
-              } else {
-                swal({title: '欲就讀本校之原因請至少選一個。',icon: "warning",button: "確定"})
-              } 
+          if(document.getElementById('birthYear').value == "") {
+            document.getElementById('birthYear').setCustomValidity('尚未選擇出生西元年。')
+            swal({title: '請選擇您的出生西元年。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('birthYear').setCustomValidity('')
+          }
+
+          if(document.getElementById('birthMonth').value == "") {
+            document.getElementById('birthMonth').setCustomValidity('尚未選擇出生月份。')
+            swal({title: '請選擇您的出生月份。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('birthMonth').setCustomValidity('')
+          }
+
+          if(document.getElementById('birthday').value == "") {
+            document.getElementById('birthday').setCustomValidity('尚未選擇出生日。')
+            swal({title: '請選擇您的出生日。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('birthday').setCustomValidity('')
+          }
+
+          if(document.getElementById('entertype1').value == "") {
+            document.getElementById('entertype1').setCustomValidity('尚未選擇第一志願系所。')
+            swal({title: '請選擇您的第一志願系所。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('entertype1').setCustomValidity('')
+          }
+
+          if(document.getElementById('entertype2').value == "") {
+            document.getElementById('entertype2').setCustomValidity('尚未選擇第二志願系所。')
+            swal({title: '請選擇您的第二志願系所。',icon: "warning",button: "確定"})
+            return ;
+          } else {
+            document.getElementById('entertype2').setCustomValidity('')
+          }
+
+          let radio_check = true
+          for(let j = 0 ; j < document.getElementsByName("reason").length; j++) {
+            if(document.getElementsByName("reason")[j].checked) {
+              radio_check = false
+            }
+          }
+
+          if(radio_check) {
+            swal({title: '請選擇從哪了解本校資訊。',icon: "warning",button: "確定"})
+            return ;
+          }
+
+          if(document.getElementById("inlineCheckbox4").checked) {
+            if(document.getElementById('ext_reasonview').value.length <= 0) {
+              document.getElementById('ext_reasonview').setCustomValidity('字數太少')
+              swal({title: '選擇其他需要填寫原因。',icon: "warning",button: "確定"})
+              return ;
+            } else {
+              document.getElementById('ext_reasonview').setCustomValidity('')
+            }
+          } else {
+            document.getElementById('ext_reasonview').setCustomValidity('')
+          }
+
+          if(form.checkValidity()){
+            submit_data()
+          } else {
+            swal({title: '電子信箱格式有錯誤。',icon: "warning",button: "確定"})
           }
         }, false)
       })

@@ -29,6 +29,7 @@ router.all('/*',function (req, res, next) {
   }
 });
 
+//取得系所資料
 router.get('/view', (req, res, next) => {
   let paramter = {
     replacements: {
@@ -58,6 +59,7 @@ router.get('/view', (req, res, next) => {
   
 });
 
+//取得帳號權限
 router.get('/user',(req, res, next) => {
   let paramter = {
     replacements: {
@@ -73,6 +75,7 @@ router.get('/user',(req, res, next) => {
   });
 })
 
+//權限新增
 router.post('/',upload.any(), (req, res, next) => {
   let paramter = {
     replacements: {
@@ -90,7 +93,7 @@ router.post('/',upload.any(), (req, res, next) => {
   });
 })
 
-
+//取得權限列表
 router.get('/',(req, res, next) => {
   let paramter = {
     replacements: {
@@ -106,7 +109,7 @@ router.get('/',(req, res, next) => {
   });
 })
 
-
+//刪除權限
 router.delete('/',(req, res, next) => {
   let paramter = {
     replacements: {
