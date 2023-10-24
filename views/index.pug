@@ -11,7 +11,7 @@ block content
             div(class='row mb-3')
               label(for="school",class="col-sm-2 col-form-label col-form-label-lg") 學校*
               div(class="col-sm-10")
-                input(type="text",class="form-control form-control-lg",list="datalistOptions",id="school",name="school",placeholder="請輸入後點選就讀的高中職(必填)",maxlength='20',required)
+                input(type="text",class="form-control form-control-lg",list="datalistOptions",id="school",name="school",placeholder="輸入部分校名尋找您的高中職(必填)",maxlength='20',required)
                 datalist(id="datalistOptions")
                   each item in list
                     option(value=item.學校名稱 ) #{item.學校名稱}
@@ -79,12 +79,12 @@ block content
               label(for="entertype",class="col-sm-2 col-form-label col-form-label-lg") 欲就讀系所*
               div(class="col-sm-5 mb-3")
                 select(class="form-select form-select-lg",id="entertype1",name="entertype1",required)
-                  option(selected,disabled,value="" ) --請選擇第一志願系所--
+                  option(selected,disabled,value="" ) --請選擇第一志願系所(必填)--
                   each dept in deptlist
                     option(value=dept.val ) #{dept.name}
               div(class="col-sm-5")
-                select(class="form-select form-select-lg",id="entertype2",name="entertype2",required)
-                  option(selected,disabled,value="" ) --請選擇第二志願系所--
+                select(class="form-select form-select-lg",id="entertype2",name="entertype2")
+                  option(selected,value="" ) --請選擇第二志願系所(選填)--
                   each dept in deptlist
                     option(value=dept.val ) #{dept.name}
             div(class='row mb-3')
@@ -142,9 +142,13 @@ block content
       }
     }
 
+
+
     let forms = document.querySelectorAll('.needs-validation')
+    //送出事件
     Array.prototype.slice.call(forms).forEach(function (form) {
-        let submit_data = function() {
+        //送出API
+        let submint_send = function () {   
           axios({
             method: "post",
             url: "/",
@@ -160,10 +164,47 @@ block content
             }
           })
           .catch(function (error) {
-            swal({title: '網站發生錯誤！',icon: "warning",button: "確定"})
+            swal({title: '資料送出至報名網站發生錯誤！',icon: "warning",button: "確定"})
           });
         }
 
+        let submit_data = function() {
+          axios({
+            method: "post",
+            url: "/getCheckUser",
+            data: new FormData(form)
+          })
+          .then((response) => {
+            console.dir(response.data)
+            if(response.data.result == 1) {
+              if(response.data.row_count >= 1) {
+                let buttonName = ["送出" ,"取消"];
+                swal({
+                  title: "已有重複資料！",
+                  text: "就讀意願資料庫已有您的資料，請再確認是否送出，將以此填報內容轉由專人與您聯繫。",
+                  icon: "warning",
+                  buttons: buttonName,
+                  dangerMode: true,
+                })
+                .then((willDelete) => {
+                  if(!willDelete) {
+                    submint_send()
+                  } else {
+                    swal("已取消送出。");
+                  }
+                });
+              } else {
+                submint_send()
+              }   
+            } else {
+              swal({title: response.data.errMsg ,icon: "warning" ,button: "確定"})
+            }
+          })
+          .catch(function (error) {
+            console.dir(error)
+            swal({title: '網站發生錯誤！',icon: "warning",button: "確定"})
+          });
+        }
         form.addEventListener('submit', function (event) {
           event.preventDefault();
           event.stopPropagation();
@@ -189,12 +230,21 @@ block content
           } else {
             document.getElementById('dept').setCustomValidity('')
           }
-
+          
           if(document.getElementById('stdtype').value == "") {
             document.getElementById('stdtype').setCustomValidity('尚未選擇身分別。')
             swal({title: '請選擇您的身分別。',icon: "warning",button: "確定"})
             return ;
           } else {
+            if(document.getElementById('stdtype').value == "其他") {
+              if(document.getElementById('ext_stdtype').value.length <= 0) {
+                document.getElementById('ext_stdtype').setCustomValidity('尚未填寫身分別。')
+                swal({title: '尚未填寫身分別。',icon: "warning",button: "確定"})
+                return ;
+              } else {
+                document.getElementById('ext_stdtype').setCustomValidity('')
+              }
+            } 
             document.getElementById('stdtype').setCustomValidity('')
           }
 
@@ -238,6 +288,11 @@ block content
             document.getElementById('birthday').setCustomValidity('')
           }
 
+          if(!document.getElementById('email').checkValidity()) {
+            swal({title: '您的Email格式錯誤。',icon: "warning",button: "確定"})
+            return ;
+          }
+
           if(document.getElementById('entertype1').value == "") {
             document.getElementById('entertype1').setCustomValidity('尚未選擇第一志願系所。')
             swal({title: '請選擇您的第一志願系所。',icon: "warning",button: "確定"})
@@ -246,12 +301,15 @@ block content
             document.getElementById('entertype1').setCustomValidity('')
           }
 
-          if(document.getElementById('entertype2').value == "") {
-            document.getElementById('entertype2').setCustomValidity('尚未選擇第二志願系所。')
-            swal({title: '請選擇您的第二志願系所。',icon: "warning",button: "確定"})
-            return ;
-          } else {
-            document.getElementById('entertype2').setCustomValidity('')
+          document.getElementById('entertype2').setCustomValidity('')
+          if(document.getElementById('entertype2').value != "") {
+            if(document.getElementById('entertype2').value == document.getElementById('entertype1').value) {
+              document.getElementById('entertype2').setCustomValidity('第二志願系所與第一志願系所相同。')
+              swal({title: '第二志願系所與第一志願系所相同。',icon: "warning",button: "確定"})
+              return ;
+            } else {
+              document.getElementById('entertype2').setCustomValidity('')
+            }
           }
 
           let radio_check = true
@@ -281,7 +339,7 @@ block content
           if(form.checkValidity()){
             submit_data()
           } else {
-            swal({title: '電子信箱格式有錯誤。',icon: "warning",button: "確定"})
+            swal({title: '送出的表單資料格式有錯誤。',icon: "warning",button: "確定"})
           }
         }, false)
       })

@@ -96,6 +96,19 @@ router.get('/', function (req, res, next) {
   }
   ]
 
+  sequelize.query("SELECT school_no AS 代碼,school_name AS 學校名稱 FROM OIT.dbo.ref_school_year WHERE LEN(school_no) = 6 AND school_year = '112'").then(function (DataList) {
+    res.render('index', {
+      title: '亞東科技大學 就讀意願調查',
+      list: DataList[0],
+      deptlist: enterdeptlist
+    });
+  })
+  .catch(err => {
+    console.dir(err)
+    res.send('系統發生錯誤。');
+  });
+
+  /*
   const converter = csv() 
     .fromFile('./public/cache/high.csv')
     .then((json) => {
@@ -105,6 +118,7 @@ router.get('/', function (req, res, next) {
         deptlist: enterdeptlist
       });
     });
+  */
 });
 
 //先確認重複填的部分
@@ -116,18 +130,20 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
   
   let paramter = {
     replacements: {
+      es_school: req.body.school,
       es_stdname: req.body.stdname,
       es_birthday: birthdayStr,
     }
   }
 
-  sequelize.query("SELECT COUNT([es_stdname]) AS row_count FROM [ARCHIVES].[dbo].[tb_EnrolledSurvey] WHERE es_stdname LIKE :es_stdname AND es_birthday = :es_birthday AND [es_is_del] = 0", paramter)
+  sequelize.query("SELECT COUNT([es_stdname]) AS row_count FROM [ARCHIVES].[dbo].[tb_EnrolledSurvey] WHERE [es_school] = :es_school AND es_stdname LIKE :es_stdname AND es_birthday = :es_birthday AND [es_is_del] = 0", paramter)
     .then(function (DataList) {
       console.dir(DataList)
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList,result: 1}))
+      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({row_count: DataList[0][0].row_count,result: 1}))
     })
     .catch(err => {
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: 'API error。',result: 0}))
+      console.dir(err)
+      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({row_count: 0,errMsg: 'API error。',result: 0}))
     });
   
 });
@@ -136,12 +152,17 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
 // 送出資料
 router.post('/', upload.any(), async (req, res, next) => {
   let birthdayStr = '';
+  if(req.body.birthYear == '' || req.body.birthMonth == '' || req.body.birthday == '') {
+    res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未選擇,Birthday input error',result: 0}));
+    return;
+  }
+
   birthdayStr += (Number(req.body.birthYear) - 1911) >= 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
   birthdayStr += (Number(req.body.birthMonth) >= 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString() 
   birthdayStr += (Number(req.body.birthday) >= 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString() 
 
   if(birthdayStr.length != 7) {
-    res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未填寫,Birthday input error',result: 0}));
+    res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未選擇,Birthday input error',result: 0}));
     return;
   }
   
