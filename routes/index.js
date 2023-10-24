@@ -42,61 +42,61 @@ router.get('/en', function (req, res, next) {
 //主要資料填寫畫面
 router.get('/', function (req, res, next) {
   let enterdeptlist = [
-  {
-    val: '1MT',
-    name: '日間部四技材料織品服裝系'
-  },
-  {
-    val: '1DN',
-    name: '日間部四技工商業設計系'
-  },
-  {
-    val: '1ME',
-    name: '日間部四技機械工程系'
-  },
-  {
-    val: '1CE',
-    name: '日間部四技通訊工程系'
-  },
-  {
-    val: '1ET',
-    name: '日間部四技電子工程系'
-  },
-  {
-    val: '1EE',
-    name: '日間部四技電機工程系'
-  },
-  {
-    val: '1IM',
-    name: '日間部四技工業管理系'
-  },
-  {
-    val: '1HA',
-    name: '日間部四技醫務管理系'
-  },
-  {
-    val: '1MI',
-    name: '日間部四技資訊管理系'
-  },
-  {
-    val: '1MD',
-    name: '日間部四技行銷與流通管理系'
-  },
-  {
-    val: '1NS',
-    name: '日間部四技護理系'
-  },
-  {
-    val: '2NS',
-    name: '日間部二技護理系'
-  },
-  {
-    val: 'RNS',
-    name: '進修部二技護理系'
-  }
+    {
+      val: '1MT',
+      name: '四技材料織品服裝系'
+    },
+    {
+      val: '1DN',
+      name: '四技工商業設計系'
+    },
+    {
+      val: '1ME',
+      name: '四技機械工程系'
+    },
+    {
+      val: '1CE',
+      name: '四技通訊工程系'
+    },
+    {
+      val: '1ET',
+      name: '四技電子工程系'
+    },
+    {
+      val: '1EE',
+      name: '四技電機工程系'
+    },
+    {
+      val: '1IM',
+      name: '四技工業管理系'
+    },
+    {
+      val: '1HA',
+      name: '四技醫務管理系'
+    },
+    {
+      val: '1MI',
+      name: '四技資訊管理系'
+    },
+    {
+      val: '1MD',
+      name: '四技行銷與流通管理系'
+    },
+    {
+      val: '1NS',
+      name: '四技護理系'
+    },
+    {
+      val: '2NS',
+      name: '日間部二技護理系'
+    },
+    {
+      val: 'RNS',
+      name: '進修部二技護理系'
+    }
   ]
 
-  sequelize.query("SELECT school_no AS 代碼,school_name AS 學校名稱 FROM OIT.dbo.ref_school_year WHERE LEN(school_no) = 6 AND school_year = '112'").then(function (DataList) {
+  sequelize.query("SELECT school_no AS 代碼,school_name AS 學校名稱 FROM OIT.dbo.ref_school_year WHERE LEN(school_no) = 6 AND school_year = '112' AND [school_name] NOT LIKE '%教育機構%' AND  [school_name] NOT LIKE '%籌備處%' ORDER BY [school_orderby]").then(function (DataList) {
     res.render('index', {
       title: '亞東科技大學 就讀意願調查',
       list: DataList[0],

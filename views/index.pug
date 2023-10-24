@@ -10,7 +10,7 @@ block content
           form(class="needs-validation",id="formdata",name="formdata",method="post",action='/',novalidate)
             div(class='row mb-3')
               label(for="school",class="col-sm-2 col-form-label col-form-label-lg") 學校*
-              div(class="col-sm-10")
+              div(class="col-sm-4")
                 input(type="text",class="form-control form-control-lg",list="datalistOptions",id="school",name="school",placeholder="輸入部分校名尋找您的高中職(必填)",maxlength='20',required)
                 datalist(id="datalistOptions")
                   each item in list
