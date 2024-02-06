@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var multer  = require('multer')
+var multer = require('multer')
 var upload = multer()
 const csv = require('csvtojson');
 const Null = require('tedious/lib/data-types/null');
@@ -103,10 +103,10 @@ router.get('/', function (req, res, next) {
       deptlist: enterdeptlist
     });
   })
-  .catch(err => {
-    console.dir(err)
-    res.send('系統發生錯誤。');
-  });
+    .catch(err => {
+      console.dir(err)
+      res.send('系統發生錯誤。');
+    });
 
   /*
   const converter = csv() 
@@ -122,12 +122,12 @@ router.get('/', function (req, res, next) {
 });
 
 //先確認重複填的部分
-router.post('/getCheckUser', upload.any(),function (req, res, next) {
+router.post('/getCheckUser', upload.any(), function (req, res, next) {
   let birthdayStr = '';
-  birthdayStr += (Number(req.body.birthYear) - 1911) >= 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
-  birthdayStr += (Number(req.body.birthMonth) >= 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString() 
-  birthdayStr += (Number(req.body.birthday) >= 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString() 
-  
+  birthdayStr += (Number(req.body.birthYear) - 1911) >= 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString()
+  birthdayStr += (Number(req.body.birthMonth) >= 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString()
+  birthdayStr += (Number(req.body.birthday) >= 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString()
+
   let paramter = {
     replacements: {
       es_school: req.body.school,
@@ -139,37 +139,37 @@ router.post('/getCheckUser', upload.any(),function (req, res, next) {
   sequelize.query("SELECT COUNT([es_stdname]) AS row_count FROM [ARCHIVES].[dbo].[tb_EnrolledSurvey] WHERE [es_school] = :es_school AND es_stdname LIKE :es_stdname AND es_birthday = :es_birthday AND [es_is_del] = 0", paramter)
     .then(function (DataList) {
       console.dir(DataList)
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({row_count: DataList[0][0].row_count,result: 1}))
+      res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ row_count: DataList[0][0].row_count, result: 1 }))
     })
     .catch(err => {
       console.dir(err)
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({row_count: 0,errMsg: 'API error。',result: 0}))
+      res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ row_count: 0, errMsg: 'API error。', result: 0 }))
     });
-  
+
 });
 
 
 // 送出資料
 router.post('/', upload.any(), async (req, res, next) => {
   let birthdayStr = '';
-  if(req.body.birthYear == '' || req.body.birthMonth == '' || req.body.birthday == '') {
-    res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未選擇,Birthday input error',result: 0}));
+  if (req.body.birthYear == '' || req.body.birthMonth == '' || req.body.birthday == '') {
+    res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ data: [], errMsg: '生日未選擇,Birthday input error', result: 0 }));
     return;
   }
 
-  birthdayStr += (Number(req.body.birthYear) - 1911) >= 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString() 
-  birthdayStr += (Number(req.body.birthMonth) >= 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString() 
-  birthdayStr += (Number(req.body.birthday) >= 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString() 
+  birthdayStr += (Number(req.body.birthYear) - 1911) >= 100 ? (Number(req.body.birthYear) - 1911).toString() : '0' + (Number(req.body.birthYear) - 1911).toString()
+  birthdayStr += (Number(req.body.birthMonth) >= 10) ? req.body.birthMonth.toString() : '0' + req.body.birthMonth.toString()
+  birthdayStr += (Number(req.body.birthday) >= 10) ? req.body.birthday.toString() : '0' + req.body.birthday.toString()
 
-  if(birthdayStr.length != 7) {
-    res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '生日未選擇,Birthday input error',result: 0}));
+  if (birthdayStr.length != 7) {
+    res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ data: [], errMsg: '生日未選擇,Birthday input error', result: 0 }));
     return;
   }
-  
+
   let StrChkArr = Object.values(req.body)
-  for(i = 0; i < StrChkArr.length ; i++) {
-    if(StrChkArr[i].includes('=') || StrChkArr[i].includes('--')) {
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: '輸入資料請勿輸入含有(= --)相關符號。',result: 0}))
+  for (i = 0; i < StrChkArr.length; i++) {
+    if (StrChkArr[i].includes('=') || StrChkArr[i].includes('--')) {
+      res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ data: [], errMsg: '輸入資料請勿輸入含有(= --)相關符號。', result: 0 }))
       return
     }
   }
@@ -192,15 +192,17 @@ router.post('/', upload.any(), async (req, res, next) => {
       es_ip_address: req.socket.remoteAddress
     }
   }
+  //將重複資料 註記刪除 只留下一筆新增資料
+  sequelize.query("UPDATE [ARCHIVES].[dbo].[tb_EnrolledSurvey] SET es_is_del = 1 WHERE [es_school] = :es_school AND es_stdname LIKE :es_stdname AND es_birthday = :es_birthday AND [es_is_del] = 0", paramter)
 
   sequelize.query("[ARCHIVES].[dbo].[sp_insertEnrolledSurvey] :es_school ,:es_dept ,:es_stdtype,:es_stdname ,:es_phone, :es_birthday,:es_email ,:es_lineid ,:es_enterdept1 ,:es_enterdept2 ,:es_reason ,:es_ext_reason ,:es_memo ,:es_ip_address;", paramter)
     .then(function (DataList) {
       console.dir(DataList)
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: DataList,result: 1}))
+      res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ data: DataList, result: 1 }))
     })
     .catch(err => {
       console.dir(err)
-      res.set({'Content-Type': 'application/json'}).send(JSON.stringify({data: [],errMsg: 'API發生錯誤。',result: 0}))
+      res.set({ 'Content-Type': 'application/json' }).send(JSON.stringify({ data: [], errMsg: 'API發生錯誤。', result: 0 }))
     });
 });
 
