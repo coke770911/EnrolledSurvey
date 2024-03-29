@@ -32,8 +32,8 @@ router.all('/*',function (req, res, next) {
 
 let enterdeptlist = [
   {
-    val: '1MT',
-    name: '日間部四技材料與纖維系'
+    val: '1TC',
+    name: '四技材料織品服裝系'
   },
   {
     val: '1DN',

@@ -43,7 +43,7 @@ router.get('/en', function (req, res, next) {
 router.get('/', function (req, res, next) {
   let enterdeptlist = [
     {
-      val: '1MT',
+      val: '1TC',
       name: '四技材料織品服裝系'
     },
     {
